@@ -1,11 +1,11 @@
-# Reports extension for Review Board.�
-from reviewboard.extensions.base impo�rt Extension
+# Reports extension for Review Board.
+from reviewboard.extensions.base import Extension
 from reviewboard.extensions.hooks import ReviewRequestActionHook
 
 
 class RBXMLExportActionHook(ReviewRequestActionHook):
     def get_action_info(self, context):
-       return {'label':'XML Export','uri':'templates/rbxmlexport/test.txt'}
+       return {'label':'XML Export', 'uri':'templates/rbxmlexport/test.txt'}
     
             
                
