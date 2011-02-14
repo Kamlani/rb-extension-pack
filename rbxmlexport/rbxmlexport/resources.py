@@ -1,7 +1,7 @@
 from reviewboard.webapi.resources import WebAPIResource
 
 from djblets.webapi.resources import register_resource_for_model
-
+from reviewboard.webapi.resources import review_request_resource
 from reviewboard.reviews.models import ReviewRequest
 
 
@@ -12,16 +12,23 @@ class ReviewRequestResource(WebAPIResource):
     allowed_methods = ('GET')
     uri_object_key = 'id'
     fields = ('id')
-  
-	import pdb;pdb.set_trace()
-	
+      
     def get(self, request, *args, **kwargs):
-        return 200, {}
+        review_session = self.get_object(request, *args, **kwargs)
+        
+        return 200, {
+            self.item_result_key: {
+                'review_last_updated': review_session.last_updated,
+                'review_summary': review_session.summary,
+                'review_request_id': review_session.id,
+            }
+        }
+        
+        
     
-    def get_object(self, request, *args, **kwargs):
+    def get_object(self, request, local_site_name=None, *args, **kwargs):
         review_request_id = kwargs.get('id')
-        review_request = ReviewRequest.objects.get(id=review_request_id)
-        return review_request  
+        return review_request_resource.get_object(request, review_request_id, local_site_name, *args, **kwargs)
 
     
 reviewing_session_resource = ReviewRequestResource()
