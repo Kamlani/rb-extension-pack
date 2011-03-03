@@ -13,7 +13,7 @@ class RBXMLExportActionHook(ReviewRequestActionHook):
 
 
 class RBXMLExport(Extension):
-    is_configurable = False
+    is_configurable = True
     resources = [reviewing_session_resource]
     def __init__(self):
         Extension.__init__(self)
