@@ -15,7 +15,7 @@ class ReviewRequestResource(WebAPIResource):
     allowed_methods = ('GET')
     uri_object_key = 'id'
     fields = ('id')
- 
+
     def get(self, request, *args, **kwargs):
         my_review_request = self.get_object(request, *args, **kwargs)
 
@@ -108,7 +108,7 @@ class ReviewRequestResource(WebAPIResource):
     def build_body_top_screenshot(self, review):
         screenshot_review_array = []
 
-        for screenshot in review.screenshot_comments.all():   
+        for screenshot in review.screenshot_comments.all():
 
             screenshot_node = [] # Write SS Info
             screenshot_node.append(NameArray("type",None,["screenshot"]))
@@ -142,7 +142,7 @@ class ReviewRequestResource(WebAPIResource):
                             diff_comment.interfilediff,
                             diff_comment.first_line,
                             diff_comment.num_lines,
-                            False)) 
+                            False))
 
             diff_node = [] #write code-review info
             diff_node.append(NameArray("type",None,["diff"]))
