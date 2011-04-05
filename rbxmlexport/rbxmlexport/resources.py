@@ -19,27 +19,27 @@ class ReviewRequestResource(WebAPIResource):
         my_review_request = self.get_object(request, *args, **kwargs)
 
         review_request_xml = [] #Review-Request xml info
-        if my_review_request.submitter.username: 
+        if my_review_request.submitter.username:
             review_request_xml.append(NameArray(
                 "user",
                 None,
                 [my_review_request.submitter.username]))
-        if my_review_request.summary: 
+        if my_review_request.summary:
             review_request_xml.append(NameArray(
                 "summary",
                 None,
                 [my_review_request.summary]))
-        if my_review_request.description: 
+        if my_review_request.description:
             review_request_xml.append(NameArray(
                 "description",
                 None,
                 [my_review_request.description]))
-        if my_review_request.testing_done: 
+        if my_review_request.testing_done:
             review_request_xml.append(NameArray(
                 "testing",
                 None,
                 [my_review_request.testing_done]))
-        if my_review_request.changenum: 
+        if my_review_request.changenum:
             review_request_xml.append(NameArray(
                 "changenum",
                 None,
@@ -49,19 +49,19 @@ class ReviewRequestResource(WebAPIResource):
                 "bugs",
                 None,
                 [my_review_request.bugs_closed]))
-        if my_review_request.branch: 
+        if my_review_request.branch:
             review_request_xml.append(NameArray(
                 "branch",
                 None,
                 [my_review_request.branch]))
 
-        people_array = [] 
+        people_array = []
         for person in my_review_request.target_people.all():
             people_array.append(NameArray(
                 "user",
                 None,
                 [person.username]))
-        if len(people_array): 
+        if len(people_array):
             review_request_xml.append(NameArray(
                 "people",
                 None,
@@ -102,7 +102,7 @@ class ReviewRequestResource(WebAPIResource):
                 **kwargs)
 
     # Builds the entire review, calls build_bodytop(self, review)
-    # build_body_top_screenshot(self, review) and 
+    # build_body_top_screenshot(self, review) and
     # build_body_top_diffs(self, request, review)
     def build_review(self, request, review):
         review_array = []
@@ -122,17 +122,17 @@ class ReviewRequestResource(WebAPIResource):
         body_code = self.build_diffs(request, review)
         body_screenshot = self.build_screenshots(review)
 
-        if body_code is not None: 
+        if body_code is not None:
             body_code_screenshot.extend(body_bottom_code)
-        if body_screenshot is not None: 
+        if body_screenshot is not None:
             body_code_screenshot.extend(body_bottom_screenshot)
 
-        if len(body_code_screenshot): 
+        if len(body_code_screenshot):
             review_array.append(NameArray(
                 "comments",
                 None,
                 body_code_screenshot))
-        
+
         # Return review in a NameArray
         if len(review_array):
             return NameArray(
@@ -142,7 +142,7 @@ class ReviewRequestResource(WebAPIResource):
 
         return None
 
-    # Adds part of a review that contain just the body_top text 
+    # Adds part of a review that contain just the body_top text
     # along with the associated replies
     def build_body_top(self, review):
 
@@ -190,7 +190,7 @@ class ReviewRequestResource(WebAPIResource):
 
         return None
 
-    # Adds part of a review that contains a screenshot review 
+    # Adds part of a review that contains a screenshot review
     # along with the associated replies
     def build_body_top_screenshot(self, review):
         screenshot_review_array = []
@@ -232,7 +232,7 @@ class ReviewRequestResource(WebAPIResource):
 
         return None
 
-    # Adds part of a review that contains a code/diff review 
+    # Adds part of a review that contains a code/diff review
     # along with the associated replies
     def build_body_top_diffs(self, request,review):
         diff_review_array = []
