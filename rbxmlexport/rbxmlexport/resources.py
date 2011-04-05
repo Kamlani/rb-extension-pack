@@ -15,13 +15,13 @@ class ReviewRequestResource(WebAPIResource):
     allowed_methods = ('GET')
     uri_object_key = 'id'
     fields = ('id')
-  
+ 
     def get(self, request, *args, **kwargs):
         my_review_request = self.get_object(request, *args, **kwargs)
 
         review_request_xml = []
         if my_review_request.submitter.username: review_request_xml.append(NameArray("user",None,[my_review_request.submitter.username]))
-        if my_review_request.summary: review_request_xml.append(NameArray("summary",None,[my_review_request.summary]))  
+        if my_review_request.summary: review_request_xml.append(NameArray("summary",None,[my_review_request.summary]))
         if my_review_request.description: review_request_xml.append(NameArray("description",None,[my_review_request.description]))
         if my_review_request.testing_done: review_request_xml.append(NameArray("testing",None,[my_review_request.testing_done]))
         if my_review_request.changenum: review_request_xml.append(NameArray("changenum",None,[my_review_request.changenum]))
@@ -39,7 +39,7 @@ class ReviewRequestResource(WebAPIResource):
         if len(group_array): review_request_xml.append(NameArray("group",None,group_array))
 
         review_xml = []
-        for review in my_review_request.get_public_reviews():        
+        for review in my_review_request.get_public_reviews():
             current_review = self.build_review(request,review)
             if current_review: review_xml.append(current_review)
 
@@ -49,7 +49,7 @@ class ReviewRequestResource(WebAPIResource):
                                     'reviews ' : NameArray(None,"review",review_xml),
             }
         }
-    
+
     def get_object(self, request, local_site_name=None, *args, **kwargs):
         review_request_id = kwargs.get('id')
         return review_request_resource.get_object(request, review_request_id, local_site_name, *args, **kwargs)
@@ -57,14 +57,14 @@ class ReviewRequestResource(WebAPIResource):
 
     def build_review(self, request, review):
         review_array = []
- 
+
         review_array.append(NameArray("user",None,[review.user.username]))
 
         body_top = self.build_body_top(review) #adds text reviews
         if body_top is not None:
             review_array.append(body_top)
 
-   
+
         body_bottom = []
         body_bottom_code = self.build_body_top_diffs(request, review) #adds code reviews
         body_bottom_screenshot = self.build_body_top_screenshot(review) #adds screenshot reviews
@@ -72,7 +72,7 @@ class ReviewRequestResource(WebAPIResource):
         if body_bottom_code is not None: body_bottom.extend(body_bottom_code)
         if body_bottom_screenshot is not None: body_bottom.extend(body_bottom_screenshot)
         if len(body_bottom): review_array.append(NameArray("comments",None,body_bottom))
-      
+
         if len(review_array):
             return NameArray(None,None,review_array)
 
@@ -83,9 +83,9 @@ class ReviewRequestResource(WebAPIResource):
 
         text_review_array = []
         if review.body_top is not u'':
-            if review.body_top == "Ship It!": 
+            if review.body_top == "Ship It!":
                 return(NameArray("ship-it",None,["1"]))
-            else: 
+            else:
                 text_review_array.append(NameArray(None,"text",[review.body_top]))
 
         review_replies = []
@@ -97,7 +97,7 @@ class ReviewRequestResource(WebAPIResource):
                 review_replies.append(NameArray(None,None,single_reply))
 
         if len(review_replies):
-            text_review_array.append(NameArray("replies","reply",review_replies)) 
+            text_review_array.append(NameArray("replies","reply",review_replies))
 
         if len(text_review_array):
             return NameArray("body-top",None,text_review_array)
@@ -105,22 +105,22 @@ class ReviewRequestResource(WebAPIResource):
         return None
 
 
-    def build_body_top_screenshot(self, review):       
+    def build_body_top_screenshot(self, review):
         screenshot_review_array = []
 
-        for screenshot in review.screenshot_comments.all():        
+        for screenshot in review.screenshot_comments.all():   
 
             screenshot_node = [] # Write SS Info
             screenshot_node.append(NameArray("type",None,["screenshot"]))
             screenshot_node.append(NameArray("url",None,["http://"+Site.objects.get_current().domain+screenshot.get_image_url()]))
             screenshot_node.append(NameArray("text",None,[screenshot.text]))
 
-            screenshot_replies = self.get_reply_comment(screenshot.public_replies()) # get replies      
+            screenshot_replies = self.get_reply_comment(screenshot.public_replies()) # get replies
             if len(screenshot_replies):
                 screenshot_node.append(NameArray("replies","reply",screenshot_replies))
 
             screenshot_review_array.append(NameArray("comment",None,screenshot_node))
-        
+
         if len(screenshot_review_array):
             return screenshot_review_array
         return None
@@ -144,11 +144,11 @@ class ReviewRequestResource(WebAPIResource):
                             diff_comment.num_lines,
                             False)) 
 
-            diff_node = [] #write code-review info                                          
+            diff_node = [] #write code-review info
             diff_node.append(NameArray("type",None,["diff"]))
             diff_node.append(NameArray("text",None,[diff_comment.text]))
             diff_node.append(NameArray("file",None,[diff_comment.filediff.source_file]))
-            
+
             chunks = []
             counter = 0
             for single_line in content[0]['lines']:
@@ -160,13 +160,11 @@ class ReviewRequestResource(WebAPIResource):
                 chunks.append(NameArray("line",None,chunk))
 
             diff_node.append(NameArray("chunk",None,chunks))
-        
 
-       
-            diff_replies = self.get_reply_comment(diff_comment.public_replies()) # get replies                 
+            diff_replies = self.get_reply_comment(diff_comment.public_replies()) # get replies
             if len(diff_replies):
                 diff_node.append(NameArray("replies","reply",diff_replies))
-        
+
             diff_review_array.append(NameArray("comment",None,diff_node))
 
         if  len(diff_review_array):
