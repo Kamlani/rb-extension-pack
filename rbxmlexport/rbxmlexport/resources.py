@@ -45,7 +45,7 @@ class ReviewRequestResource(WebAPIResource):
 
         return 200, {
             self.item_result_key: {
-                                    'review-request' : NameArray(None,None,review_request_xml),
+                                    'request' : NameArray(None,None,review_request_xml),
                                     'reviews ' : NameArray(None,"review",review_xml),
             }
         }
@@ -91,9 +91,10 @@ class ReviewRequestResource(WebAPIResource):
         review_replies = []
         for reply in review.public_replies():
             single_reply = []
-            single_reply.append(NameArray(None,"user",[reply.user.username]))
-            single_reply.append(NameArray(None,"comment",[reply.body_top]))
-            review_replies.append(NameArray(None,None,single_reply))
+            if reply.body_top is not u'':
+                single_reply.append(NameArray(None,"user",[reply.user.username]))
+                single_reply.append(NameArray(None,"comment",[reply.body_top]))
+                review_replies.append(NameArray(None,None,single_reply))
 
         if len(review_replies):
             text_review_array.append(NameArray("replies","reply",review_replies)) 
@@ -144,7 +145,7 @@ class ReviewRequestResource(WebAPIResource):
                             False)) 
 
             diff_node = [] #write code-review info                                          
-            diff_node.append(NameArray("type",None,[content]))
+            diff_node.append(NameArray("type",None,["diff"]))
             diff_node.append(NameArray("text",None,[diff_comment.text]))
             diff_node.append(NameArray("file",None,[diff_comment.filediff.source_file]))
             
