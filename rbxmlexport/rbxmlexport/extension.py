@@ -7,10 +7,6 @@ from rbxmlexport.resources import reviewing_session_resource
 class RBXMLExportActionHook(ReviewRequestActionHook):
     def get_action_info(self, context):
        return {'label':'XML Export', 'uri':'templates/rbxmlexport/test.txt'}
-    
-            
-               
-
 
 class RBXMLExport(Extension):
     is_configurable = True
