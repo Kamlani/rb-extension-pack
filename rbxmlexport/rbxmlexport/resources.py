@@ -123,9 +123,9 @@ class ReviewRequestResource(WebAPIResource):
         body_screenshot = self.build_screenshots(review)
 
         if body_code is not None:
-            body_code_screenshot.extend(body_bottom_code)
+            body_code_screenshot.extend(body_code)
         if body_screenshot is not None:
-            body_code_screenshot.extend(body_bottom_screenshot)
+            body_code_screenshot.extend(body_screenshot)
 
         if len(body_code_screenshot):
             review_array.append(NameArray(
@@ -192,7 +192,7 @@ class ReviewRequestResource(WebAPIResource):
 
     # Adds part of a review that contains a screenshot review
     # along with the associated replies
-    def build_body_top_screenshot(self, review):
+    def build_screenshots(self, review):
         screenshot_review_array = []
 
         for screenshot in review.screenshot_comments.all():
@@ -234,7 +234,7 @@ class ReviewRequestResource(WebAPIResource):
 
     # Adds part of a review that contains a code/diff review
     # along with the associated replies
-    def build_body_top_diffs(self, request,review):
+    def build_diffs(self, request,review):
         diff_review_array = []
 
         context = RequestContext(request, {
