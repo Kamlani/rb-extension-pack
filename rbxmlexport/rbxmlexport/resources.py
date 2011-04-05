@@ -74,7 +74,7 @@ class ReviewRequestResource(WebAPIResource):
                 None,
                 [group.display_name]))
 
-        if len(group_array): 
+        if len(group_array):
             review_request_xml.append(NameArray(
                 "group",
                 None,
